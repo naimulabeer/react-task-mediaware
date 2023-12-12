@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const Problem1 = () => {
   const [show, setShow] = useState("all");
@@ -12,15 +12,21 @@ const Problem1 = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setTasks([...tasks, { name, status }]);
+    setTasks([...tasks, { name, status: status.trim() }]);
     setName("");
     setStatus("");
   };
 
   const customSort = (a, b) => {
-    if (a.status === "active" && b.status !== "active") {
+    if (
+      a.status.trim().toLowerCase() === "active" &&
+      b.status.trim().toLowerCase() !== "active"
+    ) {
       return -1;
-    } else if (a.status !== "completed" && b.status === "completed") {
+    } else if (
+      a.status.trim().toLowerCase() !== "completed" &&
+      b.status.trim().toLowerCase() === "completed"
+    ) {
       return 1;
     } else {
       return 0;
@@ -31,7 +37,7 @@ const Problem1 = () => {
   const filteredTasks =
     show === "all"
       ? sortedTasks
-      : sortedTasks.filter((task) => task.status === show);
+      : sortedTasks.filter((task) => task.status.trim().toLowerCase() === show);
 
   return (
     <div className="container">
