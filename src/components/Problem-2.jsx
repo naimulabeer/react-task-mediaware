@@ -8,11 +8,14 @@ const Problem2 = () => {
   const [allContacts, setAllContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
   const [onlyEven, setOnlyEven] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [allPage, setAllPage] = useState(1);
+  const [usPage, setUsPage] = useState(1);
 
   useEffect(() => {
     fetch("https://contact.mediusware.com/api/contacts/")
       .then((response) => response.json())
-      .then((data) => setAllContacts(data?.results))
+      .then((data) => setAllContacts(data.results))
       .catch((error) => console.error("Error fetching all contacts:", error));
   }, []);
 
@@ -45,9 +48,16 @@ const Problem2 = () => {
     setOnlyEven(!onlyEven);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setAllPage(1);
+    setUsPage(1);
+  };
+
   const renderContacts = (contacts) =>
     contacts
       .filter((contact) => !onlyEven || contact.id % 2 === 0)
+      .filter((contact) => contact.phone.includes(searchTerm))
       .map((contact) => (
         <div key={contact.id} onClick={() => openModalC(contact)}>
           {contact.phone} ({contact.country.name})
@@ -63,6 +73,7 @@ const Problem2 = () => {
           <Button
             className="btn btn-lg btn-outline-primary"
             type="button"
+            style={{ backgroundColor: "#46139f", color: "white" }}
             onClick={openModalA}
           >
             All Contacts
@@ -70,6 +81,7 @@ const Problem2 = () => {
           <Button
             className="btn btn-lg btn-outline-warning"
             type="button"
+            style={{ backgroundColor: "#ff7f50", color: "white" }}
             onClick={openModalB}
           >
             US Contacts
@@ -80,7 +92,15 @@ const Problem2 = () => {
           <Modal.Header closeButton>
             <Modal.Title>All Contacts</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{renderContacts(allContacts)}</Modal.Body>
+          <Modal.Body>
+            <Form.Control
+              type="text"
+              placeholder="Search contacts"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+            {renderContacts(allContacts)}
+          </Modal.Body>
           <Modal.Footer>
             <Form.Check
               type="checkbox"
@@ -99,6 +119,12 @@ const Problem2 = () => {
             <Modal.Title>US Contacts</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <Form.Control
+              type="text"
+              placeholder="Search contacts"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
             {renderContacts(
               allContacts.filter(
                 (contact) => contact.country.name === "United States"
