@@ -10,9 +10,9 @@ const Problem2 = () => {
   const [onlyEven, setOnlyEven] = useState(false);
 
   useEffect(() => {
-    fetch("allcontacts.json")
+    fetch("https://contact.mediusware.com/api/contacts/")
       .then((response) => response.json())
-      .then((data) => setAllContacts(data.results))
+      .then((data) => setAllContacts(data?.results))
       .catch((error) => console.error("Error fetching all contacts:", error));
   }, []);
 
