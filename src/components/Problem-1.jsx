@@ -18,15 +18,18 @@ const Problem1 = () => {
   };
 
   const customSort = (a, b) => {
-    if (
-      a.status.trim().toLowerCase() === "active" &&
-      b.status.trim().toLowerCase() !== "active"
-    ) {
+    const statusA = a.status.trim().toLowerCase();
+    const statusB = b.status.trim().toLowerCase();
+
+    if (statusA === "active" && statusB !== "active") {
       return -1;
     } else if (
-      a.status.trim().toLowerCase() !== "completed" &&
-      b.status.trim().toLowerCase() === "completed"
+      statusA === "completed" &&
+      statusB !== "active" &&
+      statusB !== "completed"
     ) {
+      return -1;
+    } else if (statusA !== "completed" && statusB === "completed") {
       return 1;
     } else {
       return 0;
